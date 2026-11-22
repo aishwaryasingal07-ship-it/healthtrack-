@@ -1,0 +1,6 @@
+{
+  "name": "HealthTrack AI - Smart Healthcare Analyzer",
+  "description": "Simple, modern, beginner-friendly healthcare analyzer built with Flask, SQLite, Groq AI, and Chart.js for student projects.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
