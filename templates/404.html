@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Record Not Found - HealthTrack AI{% endblock %}
+
+{% block content %}
+<div style="max-width: 560px; margin: 3rem auto; text-align: center;">
+    <div class="card" style="padding: 2.5rem 1.5rem; box-shadow: var(--shadow-lg);">
+        <div style="font-size: 3.5rem; margin-bottom: 0.5rem;">🔒</div>
+        <h1 style="font-size: 1.8rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.5rem;">
+            Record Not Found or Access Restricted
+        </h1>
+        <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.8rem;">
+            The requested medical report, test entry, or page does not exist or belongs to another user account. For patient privacy and data isolation, access is prohibited.
+        </p>
+        <a href="{{ url_for('dashboard') }}" class="btn btn-primary">
+            🏠 Return to My Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}

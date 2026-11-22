@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}AI Report Analysis - HealthTrack AI{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div>
+            <h1><span>🧠</span> PDF Laboratory Report Analysis</h1>
+            <p>Report: <strong>{{ report.title }}</strong> &bull; Uploaded on {{ report.upload_date }}</p>
+        </div>
+        <div style="display: flex; gap: 0.6rem;">
+            <a href="{{ url_for('view_report_file', report_id=report.id) }}" target="_blank" class="btn btn-outline btn-sm">
+                👁️ View Raw PDF
+            </a>
+            <a href="{{ url_for('reports') }}" class="btn btn-outline btn-sm">
+                &larr; Back to Reports
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Box during re-analysis -->
+<div id="ai-loading-box" class="loading-indicator">
+    <div style="font-size: 1.1rem; margin-bottom: 0.35rem;">
+        <span class="spinner"></span> Analyzing, please wait...
+    </div>
+    <div style="font-size: 0.85rem; color: #15803d;">Reading PDF text with pypdf and consulting Groq Llama 3.3.</div>
+</div>
+
+{% if is_scanned %}
+    <!-- Scanned PDF Notice -->
+    <div class="card card-orange" style="box-shadow: var(--shadow-lg);">
+        <div style="display: flex; align-items: flex-start; gap: 1rem;">
+            <div style="font-size: 2.2rem;">📷</div>
+            <div>
+                <h2 style="font-size: 1.3rem; font-weight: 700; color: #9a3412; margin-bottom: 0.5rem;">
+                    Scanned Document Detected
+                </h2>
+                <p style="font-size: 1rem; color: #7c2d12; line-height: 1.6; margin-bottom: 1.2rem;">
+                    {{ analysis_text }}
+                </p>
+                <div style="display: flex; gap: 0.8rem; flex-wrap: wrap;">
+                    <a href="{{ url_for('add_test') }}" class="btn btn-primary">
+                        ➕ Go to Manual Test Entry
+                    </a>
+                    <a href="{{ url_for('reports') }}" class="btn btn-outline">
+                        Back to Reports
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% else %}
+    <!-- Successful AI Report Explanation Card -->
+    <div class="card card-purple" style="box-shadow: var(--shadow-lg);">
+        <div class="card-title" style="color: var(--purple); border-bottom: 1px solid #ede9fe; padding-bottom: 0.75rem;">
+            <span>✨ AI Medical Report Breakdown</span>
+            <span class="badge badge-normal" style="font-size: 0.75rem; background: #ede9fe; color: var(--purple);">
+                Groq Llama 3.3 &bull; Saved in Database
+            </span>
+        </div>
+
+        <!-- AI Output Box with clean pre-wrap formatting -->
+        <div class="ai-output-box">
+{{ analysis_text }}
+        </div>
+
+        <!-- Disclaimer Banner -->
+        <div class="disclaimer-banner">
+            <span>⚠️</span>
+            <div>
+                <strong>Important Patient Safety Note:</strong>
+                AI-generated information, not medical advice. Please consult your doctor before making any medical decisions.
+            </div>
+        </div>
+
+        <!-- Re-analyze Action Button -->
+        <div style="margin-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; border-top: 1px solid var(--border); padding-top: 1.2rem;">
+            <span style="font-size: 0.85rem; color: var(--text-muted);">
+                💡 This analysis is safely cached in your database and loads instantly without re-calling the API.
+            </span>
+            <form action="{{ url_for('analyze_report', report_id=report.id) }}" method="POST" onsubmit="showAiLoading('reanalyze-btn', 'Re-analyzing, please wait...')">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                <input type="hidden" name="reanalyze" value="1">
+                <button type="submit" id="reanalyze-btn" class="btn btn-teal btn-sm">
+                    🔄 Re-analyze with AI
+                </button>
+            </form>
+        </div>
+    </div>
+{% endif %}
+
+{% endblock %}

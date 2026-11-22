@@ -1,0 +1,635 @@
+/* HealthTrack AI - Vibrant Healthcare Theme Stylesheet */
+:root {
+    /* Core Healthcare Color Palette */
+    --primary-blue: #0284c7;        /* Medical Sky/Ocean Blue */
+    --primary-blue-dark: #0369a1;
+    --primary-blue-light: #e0f2fe;
+
+    --teal: #0d9488;                /* Healthcare Mint/Teal */
+    --teal-dark: #0f766e;
+    --teal-light: #ccfbf1;
+
+    --purple: #7c3aed;              /* Clinical AI Intelligence Purple */
+    --purple-dark: #6d28d9;
+    --purple-light: #ede9fe;
+
+    --orange: #ea580c;              /* Diagnostic Attention Orange */
+    --orange-dark: #c2410c;
+    --orange-light: #ffedd5;
+
+    --green: #10b981;               /* Healthy Reference Green */
+    --green-dark: #047857;
+    --green-light: #d1fae5;
+
+    --red: #ef4444;                 /* Out of Range Alert Red */
+    --red-dark: #b91c1c;
+    --red-light: #fee2e2;
+
+    /* Backgrounds & Neutral Colors */
+    --background-start: #f0f7ff;     /* Soft light blue gradient start */
+    --background-end: #f0fdf9;       /* Soft light mint gradient end */
+    --card-bg: #ffffff;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+
+    /* Shadows & Border Radius */
+    --radius: 14px;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+    --shadow-hover: 0 12px 22px -3px rgba(0, 0, 0, 0.09), 0 6px 10px -4px rgba(0, 0, 0, 0.04);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, var(--background-start) 0%, var(--background-end) 100%);
+    color: var(--text-main);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Navigation Bar - Blue to Teal Gradient with White Text */
+.navbar {
+    background: linear-gradient(135deg, var(--primary-blue) 0%, var(--teal) 100%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 10px rgba(2, 132, 199, 0.18);
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0.85rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    text-decoration: none;
+    color: #ffffff;
+    font-size: 1.28rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+
+.brand-icon {
+    width: 34px;
+    height: 34px;
+    background: rgba(255, 255, 255, 0.22);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: #ffffff;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    list-style: none;
+    flex-wrap: wrap;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+    font-size: 0.9rem;
+    padding: 0.45rem 0.85rem;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.22);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.user-pill-item {
+    margin-left: 0.5rem;
+}
+
+.user-greeting {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.4rem 0.8rem;
+    background: rgba(255, 255, 255, 0.18);
+    color: #ffffff;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.logout-btn {
+    color: #fee2e2 !important;
+    background-color: rgba(239, 68, 68, 0.3) !important;
+    font-weight: 600 !important;
+    border: 1px solid rgba(254, 202, 202, 0.35);
+}
+
+.logout-btn:hover {
+    background-color: rgba(239, 68, 68, 0.6) !important;
+    color: #ffffff !important;
+}
+
+.btn-signup-nav {
+    background: #ffffff !important;
+    color: var(--primary-blue) !important;
+    font-weight: 600 !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-signup-nav:hover {
+    background-color: #f1f5f9 !important;
+    color: var(--primary-blue-dark) !important;
+}
+
+/* Main Container */
+.container {
+    max-width: 1200px;
+    width: 100%;
+    margin: 1.8rem auto;
+    padding: 0 1.5rem;
+    flex: 1;
+}
+
+/* Page Header */
+.page-header {
+    margin-bottom: 1.8rem;
+}
+
+.page-header h1 {
+    font-size: 1.85rem;
+    font-weight: 700;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.page-header p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin-top: 0.25rem;
+}
+
+/* Flash Messages */
+.flash-container {
+    margin-bottom: 1.5rem;
+}
+
+.flash-message {
+    padding: 0.85rem 1.2rem;
+    border-radius: var(--radius);
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.flash-success {
+    background-color: var(--green-light);
+    color: var(--green-dark);
+    border: 1px solid #a7f3d0;
+}
+
+.flash-error {
+    background-color: var(--red-light);
+    color: var(--red-dark);
+    border: 1px solid #fecaca;
+}
+
+/* Cards - Rounded, Soft Shadow, and Hover Lift Effect */
+.card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    margin-bottom: 1.5rem;
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-hover);
+}
+
+/* Distinct Colored Top Borders on Cards */
+.card-blue {
+    border-top: 4px solid var(--primary-blue);
+}
+
+.card-teal {
+    border-top: 4px solid var(--teal);
+}
+
+.card-purple {
+    border-top: 4px solid var(--purple);
+}
+
+.card-orange {
+    border-top: 4px solid var(--orange);
+}
+
+.card-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Grid Layouts */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.2rem;
+    margin-bottom: 1.8rem;
+}
+
+.stat-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.3rem;
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-hover);
+}
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.stat-icon.blue { background: var(--primary-blue-light); color: var(--primary-blue); }
+.stat-icon.teal { background: var(--teal-light); color: var(--teal); }
+.stat-icon.amber { background: var(--orange-light); color: var(--orange); }
+
+.stat-info h3 {
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: var(--text-main);
+    line-height: 1.2;
+}
+
+.stat-info p {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+}
+
+.content-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+/* Tables - Colored Header, Alternate Rows, Hover Highlight */
+.table-responsive {
+    overflow-x: auto;
+    width: 100%;
+    border-radius: 10px;
+}
+
+.styled-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 0.94rem;
+    text-align: left;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.styled-table thead tr {
+    background: linear-gradient(135deg, var(--primary-blue) 0%, var(--teal) 100%);
+    color: #ffffff;
+}
+
+.styled-table th {
+    padding: 0.9rem 1rem;
+    font-weight: 600;
+    font-size: 0.88rem;
+    letter-spacing: 0.02em;
+    border: none;
+}
+
+.styled-table td {
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+}
+
+/* Alternate Row Colors */
+.styled-table tbody tr:nth-child(even) {
+    background-color: #f8fafc;
+}
+
+.styled-table tbody tr:nth-child(odd) {
+    background-color: #ffffff;
+}
+
+/* Hover Highlight */
+.styled-table tbody tr:hover {
+    background-color: #f0f9ff;
+}
+
+/* Test Status Badges - Rounded Pill Style */
+.badge {
+    display: inline-block;
+    padding: 0.32rem 0.8rem;
+    border-radius: 9999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    border: 1px solid transparent;
+}
+
+.badge-normal {
+    background: var(--green-light);
+    color: var(--green-dark);
+    border-color: #a7f3d0;
+}
+
+.badge-low,
+.badge-high,
+.badge-outside,
+.badge-worsened {
+    background: var(--red-light);
+    color: var(--red-dark);
+    border-color: #fecaca;
+}
+
+.badge-improved {
+    background: var(--green-light);
+    color: var(--green-dark);
+    border-color: #a7f3d0;
+}
+
+.badge-stable {
+    background: var(--primary-blue-light);
+    color: var(--primary-blue-dark);
+    border-color: #bae6fd;
+}
+
+/* Forms - Rounded with Coloured Focus Border */
+.form-group {
+    margin-bottom: 1.2rem;
+}
+
+.form-label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.88rem;
+    margin-bottom: 0.4rem;
+    color: var(--text-main);
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.75rem 0.95rem;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-size: 0.93rem;
+    color: var(--text-main);
+    background-color: #ffffff;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.form-control:focus {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+    background-color: #ffffff;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+/* Buttons with Gradient Colors and Hover Effects */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.4rem;
+    font-size: 0.92rem;
+    font-weight: 600;
+    border-radius: 10px;
+    cursor: pointer;
+    border: none;
+    text-decoration: none;
+    transition: all 0.22s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+/* Primary Blue Gradient */
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-dark) 100%);
+    color: #ffffff;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #0369a1 0%, #075985 100%);
+}
+
+/* Teal Gradient */
+.btn-teal {
+    background: linear-gradient(135deg, var(--teal) 0%, var(--teal-dark) 100%);
+    color: #ffffff;
+}
+
+.btn-teal:hover {
+    background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
+}
+
+/* Purple AI Analyze Gradient */
+.btn-purple {
+    background: linear-gradient(135deg, var(--purple) 0%, var(--purple-dark) 100%);
+    color: #ffffff;
+}
+
+.btn-purple:hover {
+    background: linear-gradient(135deg, #6d28d9 0%, #5b21b6 100%);
+}
+
+/* Danger Red Gradient */
+.btn-danger {
+    background: linear-gradient(135deg, var(--red) 0%, var(--red-dark) 100%);
+    color: #ffffff;
+}
+
+.btn-danger:hover {
+    background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+}
+
+/* Outline Button */
+.btn-outline {
+    background-color: #ffffff;
+    border: 1.5px solid var(--border);
+    color: var(--text-muted);
+}
+
+.btn-outline:hover {
+    background-color: #f1f5f9;
+    color: var(--text-main);
+    border-color: #cbd5e1;
+}
+
+.btn-sm {
+    padding: 0.45rem 0.85rem;
+    font-size: 0.82rem;
+    border-radius: 8px;
+}
+
+/* AI Output Box */
+.ai-output-box {
+    background: #fdfefe;
+    border: 1px solid #cbd5e1;
+    border-left: 5px solid var(--purple);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-top: 1.2rem;
+    white-space: pre-wrap;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: #1e293b;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.disclaimer-banner {
+    background: #fffdf5;
+    border: 1px solid #fef3c7;
+    border-left: 4px solid var(--orange);
+    border-radius: 8px;
+    padding: 0.85rem 1.2rem;
+    font-size: 0.85rem;
+    color: #9a3412;
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+/* Loading Indicator */
+.loading-indicator {
+    display: none;
+    background: #f0fdf4;
+    border: 1.5px solid #bbf7d0;
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    text-align: center;
+    color: #166534;
+    margin: 1.5rem 0;
+    font-weight: 600;
+}
+
+.spinner {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    border: 3px solid rgba(13, 148, 136, 0.3);
+    border-radius: 50%;
+    border-top-color: var(--teal);
+    animation: spin 1s ease-in-out infinite;
+    vertical-align: middle;
+    margin-right: 8px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Footer */
+footer {
+    background: #ffffff;
+    border-top: 1px solid var(--border);
+    padding: 1.5rem;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin-top: auto;
+}
+
+/* Mobile Responsiveness (Single Clean Media Query) */
+@media (max-width: 860px) {
+    .content-grid-2 {
+        grid-template-columns: 1fr;
+    }
+
+    .nav-container {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 0.75rem 1rem;
+    }
+
+    .nav-links {
+        width: 100%;
+        justify-content: flex-start;
+        gap: 0.3rem;
+    }
+
+    .user-pill-item {
+        margin-left: 0;
+    }
+
+    .page-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .card {
+        padding: 1.2rem;
+    }
+}

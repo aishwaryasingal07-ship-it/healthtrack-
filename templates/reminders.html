@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}Checkup Reminders - HealthTrack AI{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1><span>⏰</span> Medical Checkup Reminders</h1>
+    <p>Never miss a doctor appointment, lab test follow-up, or prescription renewal.</p>
+</div>
+
+<div class="content-grid-2">
+    <!-- Add Reminder Form -->
+    <div class="card card-orange">
+        <h2 class="card-title">Schedule New Checkup Reminder</h2>
+        <form action="{{ url_for('reminders') }}" method="POST">
+            <!-- CSRF Protection Token -->
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+            <div class="form-group">
+                <label for="title" class="form-label">Reminder Title / Purpose</label>
+                <input type="text" id="title" name="title" class="form-control" placeholder="e.g. HbA1c 3-Month Follow Up or Cardiologist Visit" required>
+            </div>
+
+            <div class="form-group">
+                <label for="checkup_date" class="form-label">Checkup Date</label>
+                <input type="date" id="checkup_date" name="checkup_date" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label for="notes" class="form-label">Doctor / Clinic Notes (Optional)</label>
+                <textarea id="notes" name="notes" rows="3" class="form-control" placeholder="e.g. Bring fasting test report, meet Dr. Verma at 10:30 AM in Room 204"></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%;">
+                ⏰ Add Checkup Reminder
+            </button>
+        </form>
+    </div>
+
+    <!-- Health Advice Card -->
+    <div class="card card-teal" style="background: #ffffff;">
+        <h2 class="card-title">💡 Why Preventative Checkups Matter</h2>
+        <p style="font-size: 0.92rem; color: var(--text-muted); margin-bottom: 0.8rem;">
+            Regular follow-ups help spot health variations before they progress:
+        </p>
+        <ul style="padding-left: 1.2rem; color: var(--text-muted); font-size: 0.9rem; line-height: 1.8;">
+            <li><strong>Blood Sugar Check</strong>: Keep a 3-month tab on HbA1c to adjust daily nutrition.</li>
+            <li><strong>Lipid & Cardiac Check</strong>: Monitor cholesterol annually if borderline.</li>
+            <li><strong>Dental & Vision</strong>: Recommended every 6 to 12 months.</li>
+        </ul>
+    </div>
+</div>
+
+<!-- Reminders List -->
+<div class="card card-blue">
+    <div class="card-title">
+        <span>📅 Scheduled Checkups ({{ reminders|length }})</span>
+    </div>
+
+    {% if reminders %}
+        <div class="table-responsive">
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>Title / Appointment</th>
+                        <th>Scheduled Date</th>
+                        <th>Notes & Instructions</th>
+                        <th style="text-align: right;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in reminders %}
+                        <tr>
+                            <td><strong>{{ r.title }}</strong></td>
+                            <td>
+                                <span class="badge badge-stable" style="font-size: 0.85rem;">
+                                    📅 {{ r.checkup_date }}
+                                </span>
+                            </td>
+                            <td style="color: var(--text-muted); max-width: 320px;">
+                                {{ r.notes if r.notes else "—" }}
+                            </td>
+                            <td style="text-align: right;">
+                                <form action="{{ url_for('delete_reminder', reminder_id=r.id) }}" method="POST" onsubmit="return confirm('Delete this reminder?');" style="display: inline;">
+                                    <!-- CSRF Token -->
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        🗑️ Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div style="text-align: center; padding: 2rem; color: var(--text-muted);">
+            <p style="font-size: 1.1rem; margin-bottom: 0.5rem;">No checkup reminders scheduled.</p>
+            <p style="font-size: 0.9rem;">Add an upcoming checkup or doctor visit using the form above.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

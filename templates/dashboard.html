@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - HealthTrack AI{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1><span>📊</span> Patient Health Dashboard</h1>
+    <p>Overview of your saved medical reports, vital lab tests, and upcoming appointments.</p>
+</div>
+
+<!-- 3 Main Summary Statistic Cards with Vibrant Accents -->
+<div class="stats-grid">
+    <div class="stat-card card-blue">
+        <div class="stat-icon blue">📁</div>
+        <div class="stat-info">
+            <h3>{{ total_reports }}</h3>
+            <p>Saved PDF Reports</p>
+        </div>
+    </div>
+    <div class="stat-card card-teal">
+        <div class="stat-icon teal">🧪</div>
+        <div class="stat-info">
+            <h3>{{ total_tests }}</h3>
+            <p>Total Lab Tests</p>
+        </div>
+    </div>
+    <div class="stat-card card-orange">
+        <div class="stat-icon amber">⏰</div>
+        <div class="stat-info">
+            <h3>{{ total_reminders }}</h3>
+            <p>Upcoming Checkups</p>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Action Shortcuts -->
+<div class="card card-purple" style="margin-bottom: 1.5rem; background: linear-gradient(135deg, #ffffff 0%, #faf5ff 100%);">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div>
+            <h3 style="color: var(--purple); font-size: 1.15rem; margin-bottom: 0.25rem;">⚡ Quick Actions</h3>
+            <p style="font-size: 0.9rem; color: var(--text-muted);">Upload diagnostic reports, record lab values, or run educational AI analysis.</p>
+        </div>
+        <div style="display: flex; gap: 0.6rem; flex-wrap: wrap;">
+            <a href="{{ url_for('add_test') }}" class="btn btn-primary btn-sm">➕ Add Test Result</a>
+            <a href="{{ url_for('reports') }}" class="btn btn-teal btn-sm">📄 Upload PDF</a>
+            <a href="{{ url_for('analyze') }}" class="btn btn-purple btn-sm">🤖 Run AI Analysis</a>
+        </div>
+    </div>
+</div>
+
+<div class="content-grid-2">
+    <!-- Recent Test Results Table -->
+    <div class="card card-blue">
+        <div class="card-title">
+            <span>🧪 Recent Test Results</span>
+            <a href="{{ url_for('add_test') }}" style="font-size: 0.85rem; color: var(--primary); text-decoration: none;">View All</a>
+        </div>
+
+        {% if recent_tests %}
+            <div class="table-responsive">
+                <table class="styled-table">
+                    <thead>
+                        <tr>
+                            <th>Test Name</th>
+                            <th>Value</th>
+                            <th>Normal Range</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for t in recent_tests %}
+                            <tr>
+                                <td>
+                                    <strong>{{ t.test_name }}</strong>
+                                    <div style="font-size: 0.78rem; color: var(--text-muted);">{{ t.test_date }}</div>
+                                </td>
+                                <td><strong>{{ t.value }}</strong> {{ t.unit }}</td>
+                                <td style="font-size: 0.85rem; color: var(--text-muted);">
+                                    {{ t.ref_min }} - {{ t.ref_max }}
+                                </td>
+                                <td>
+                                    {% if t.value < t.ref_min or t.value > t.ref_max %}
+                                        <span class="badge badge-outside">Outside Range ⚠️</span>
+                                    {% else %}
+                                        <span class="badge badge-normal">Normal ✅</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p style="color: var(--text-muted); font-size: 0.95rem; padding: 1rem 0;">
+                No lab tests recorded yet. <a href="{{ url_for('add_test') }}">Click here to add your first test result</a>.
+            </p>
+        {% endif %}
+    </div>
+
+    <!-- Upcoming Checkups & Reminders -->
+    <div class="card card-orange">
+        <div class="card-title">
+            <span>⏰ Upcoming Checkups</span>
+            <a href="{{ url_for('reminders') }}" style="font-size: 0.85rem; color: var(--orange); text-decoration: none;">Manage</a>
+        </div>
+
+        {% if reminders %}
+            <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+                {% for r in reminders %}
+                    <div style="border: 1px solid var(--border); border-left: 4px solid var(--orange); border-radius: 8px; padding: 0.85rem; background: #fffdfa;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <strong style="color: var(--text-main); font-size: 0.95rem;">{{ r.title }}</strong>
+                            <span class="badge badge-stable" style="font-size: 0.78rem;">📅 {{ r.checkup_date }}</span>
+                        </div>
+                        {% if r.notes %}
+                            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.35rem;">{{ r.notes }}</p>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p style="color: var(--text-muted); font-size: 0.95rem; padding: 1rem 0;">
+                No upcoming checkups scheduled. <a href="{{ url_for('reminders') }}">Add a new reminder here</a>.
+            </p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

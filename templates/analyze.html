@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}AI Report Analyzer - HealthTrack AI{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1><span>🤖</span> AI Health Report Analyzer</h1>
+    <p>Powered by Groq Llama 3.3. Explains laboratory numbers in clear, 10th-grade language.</p>
+</div>
+
+<!-- Analyzed Tests Summary Card -->
+<div class="card card-blue">
+    <div class="card-title">
+        <span>🧪 Tests Included in this Analysis ({{ tests|length }})</span>
+        <a href="{{ url_for('add_test') }}" class="btn btn-outline btn-sm">➕ Add More Tests</a>
+    </div>
+
+    {% if tests %}
+        <div class="table-responsive">
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>Test Name</th>
+                        <th>Measured Value</th>
+                        <th>Normal Reference Range</th>
+                        <th>Range Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for t in tests %}
+                        <tr>
+                            <td><strong>{{ t.test_name }}</strong></td>
+                            <td><strong>{{ t.value }}</strong> {{ t.unit }}</td>
+                            <td>{{ t.ref_min }} - {{ t.ref_max }} {{ t.unit }}</td>
+                            <td>
+                                {% if t.value < t.ref_min %}
+                                    <span class="badge badge-low">Below Range ⚠️</span>
+                                {% elif t.value > t.ref_max %}
+                                    <span class="badge badge-high">Above Range ⚠️</span>
+                                {% else %}
+                                    <span class="badge badge-normal">Normal ✅</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div style="margin-top: 1.2rem; display: flex; justify-content: flex-end;">
+            <a href="{{ url_for('analyze') }}" class="btn btn-teal" id="refresh-ai-btn" onclick="showAiLoading('refresh-ai-btn', 'Consulting Groq Llama 3.3...')">
+                🔄 Re-run AI Analysis
+            </a>
+        </div>
+    {% else %}
+        <p style="color: var(--text-muted); padding: 1.5rem 0;">
+            No laboratory test entries found in the database. <a href="{{ url_for('add_test') }}">Please add at least one test record</a> before analyzing.
+        </p>
+    {% endif %}
+</div>
+
+<!-- Loading Box -->
+<div id="ai-loading-box" class="loading-indicator">
+    <div style="font-size: 1.1rem; margin-bottom: 0.35rem;">
+        <span class="spinner"></span> Analyzing your blood test markers with Groq AI...
+    </div>
+    <div style="font-size: 0.85rem; color: #15803d;">Applying educational reference models. Please hold on.</div>
+</div>
+
+<!-- AI Explanation Results Card -->
+{% if ai_result %}
+<div class="card card-purple" style="box-shadow: var(--shadow-lg);">
+    <div class="card-title" style="color: var(--purple); border-bottom: 1px solid #ede9fe; padding-bottom: 0.75rem;">
+        <span>🧠 Groq AI Intelligent Explanation</span>
+        <span class="badge badge-normal" style="font-size: 0.75rem; background: #ede9fe; color: var(--purple);">Model: llama-3.3-70b-versatile</span>
+    </div>
+
+    <!-- AI Output Box with clean pre-wrap formatting -->
+    <div class="ai-output-box">
+{{ ai_result }}
+    </div>
+
+    <div class="disclaimer-banner">
+        <span>⚠️</span>
+        <div>
+            <strong>Important Safety Note:</strong>
+            AI-generated information, not medical advice. Please consult your doctor before making any medical decisions.
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Explanatory Guide Card for 2nd Year B.Tech Viva -->
+<div class="card" style="background: #f8fafc;">
+    <h3 class="card-title">🎓 How This AI Analyzer Works (Academic Guide)</h3>
+    <ol style="padding-left: 1.2rem; color: var(--text-muted); font-size: 0.9rem; line-height: 1.8;">
+        <li><strong>Data Fetching</strong>: Flask queries the SQLite <code>tests</code> table to fetch the latest values and reference bounds.</li>
+        <li><strong>Prompt Formatting</strong>: <code>ai_service.py</code> formats the numbers into a clear markdown-prompt comparing measured values against healthy minimums and maximums.</li>
+        <li><strong>Groq API Request</strong>: The prompt is sent to Groq's high-speed inference engine using the official Python SDK (<code>llama-3.3-70b-versatile</code>).</li>
+        <li><strong>Safety Alignment</strong>: Strict negative system prompts guarantee that the AI never prescribes drugs or diagnoses illnesses, adhering to healthcare ethics.</li>
+    </ol>
+</div>
+{% endblock %}

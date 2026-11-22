@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}HealthTrack AI - Smart Healthcare Analyzer{% endblock %}</title>
+    <!-- Google Font (Poppins) -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+    <!-- Healthcare Theme CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Chart.js CDN for History Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <!-- Main Navigation Bar -->
+    <header class="navbar">
+        <div class="nav-container">
+            <a href="{% if is_logged_in %}{{ url_for('dashboard') }}{% else %}{{ url_for('login') }}{% endif %}" class="brand">
+                <span class="brand-icon">⚕</span>
+                <span>HealthTrack AI</span>
+            </a>
+            <nav>
+                <ul class="nav-links">
+                    {% if is_logged_in %}
+                        <li><a href="{{ url_for('dashboard') }}" class="{% if request.endpoint == 'dashboard' %}active{% endif %}">Dashboard</a></li>
+                        <li><a href="{{ url_for('reports') }}" class="{% if request.endpoint == 'reports' %}active{% endif %}">Reports</a></li>
+                        <li><a href="{{ url_for('add_test') }}" class="{% if request.endpoint == 'add_test' %}active{% endif %}">Add Test</a></li>
+                        <li><a href="{{ url_for('analyze') }}" class="{% if request.endpoint == 'analyze' %}active{% endif %}">Analyze</a></li>
+                        <li><a href="{{ url_for('history') }}" class="{% if request.endpoint == 'history' %}active{% endif %}">History</a></li>
+                        <li><a href="{{ url_for('diet') }}" class="{% if request.endpoint == 'diet' %}active{% endif %}">Diet</a></li>
+                        <li><a href="{{ url_for('reminders') }}" class="{% if request.endpoint == 'reminders' %}active{% endif %}">Reminders</a></li>
+                        <li class="user-pill-item">
+                            <span class="user-greeting" title="{{ current_user_email }}">👤 {{ current_user_name }}</span>
+                        </li>
+                        <li><a href="{{ url_for('logout') }}" class="logout-btn">Log Out</a></li>
+                    {% else %}
+                        <li><a href="{{ url_for('login') }}" class="{% if request.endpoint == 'login' %}active{% endif %}">Sign In</a></li>
+                        <li><a href="{{ url_for('signup') }}" class="btn-signup-nav {% if request.endpoint == 'signup' %}active{% endif %}">Create Account</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Page Content Container -->
+    <main class="container">
+        <!-- Flash Notification Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-container">
+                    {% for category, message in messages %}
+                        <div class="flash-message flash-{{ category }}">
+                            <span>{{ message }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Child Page Content Injected Here -->
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>HealthTrack AI — Academic Project &copy; 2025. Educational Tool Only.</p>
+        <p style="font-size: 0.8rem; margin-top: 0.25rem;">Disclaimer: AI-generated information, not medical advice. Always consult your doctor.</p>
+    </footer>
+
+    <!-- App JavaScript -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

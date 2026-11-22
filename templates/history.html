@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block title %}Health History Comparison - HealthTrack AI{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1><span>📈</span> Health History & Trend Comparison</h1>
+    <p>Track test values over time and see whether your numbers are improving, stable, or worsening.</p>
+</div>
+
+<!-- Test Selector Filter -->
+<div class="card card-blue">
+    <form method="GET" action="{{ url_for('history') }}" style="display: flex; gap: 1rem; align-items: flex-end; flex-wrap: wrap;">
+        <div style="flex: 1; min-width: 250px;">
+            <label for="test_name" class="form-label">Select Laboratory Test to Compare:</label>
+            <select name="test_name" id="test_name" class="form-control" onchange="this.form.submit()">
+                {% for tname in distinct_tests %}
+                    <option value="{{ tname }}" {% if tname == selected_test %}selected{% endif %}>
+                        {{ tname }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Load History</button>
+    </form>
+</div>
+
+{% if selected_test and test_records %}
+    <!-- Trend Status & Quick Comparison Summary -->
+    <div class="stats-grid">
+        <div class="stat-card card-teal">
+            <div class="stat-icon teal">📊</div>
+            <div class="stat-info">
+                <h3>{{ test_records|length }}</h3>
+                <p>Recorded Readings</p>
+            </div>
+        </div>
+
+        <div class="stat-card card-blue">
+            <div class="stat-icon blue">🔍</div>
+            <div class="stat-info">
+                <h3>
+                    {% if test_records|length >= 2 %}
+                        {{ test_records[-2].value }} ➔ {{ test_records[-1].value }}
+                    {% else %}
+                        {{ test_records[-1].value }}
+                    {% endif %}
+                    <span style="font-size: 0.9rem; font-weight: 500;">{{ unit }}</span>
+                </h3>
+                <p>Previous vs Current Value</p>
+            </div>
+        </div>
+
+        <div class="stat-card card-orange">
+            <div class="stat-icon amber">🎯</div>
+            <div class="stat-info">
+                <div>
+                    {% if trend_status == "Improved" %}
+                        <span class="badge badge-improved" style="font-size: 1.1rem; padding: 0.4rem 0.9rem;">Improved ✅</span>
+                    {% elif trend_status == "Worsened" %}
+                        <span class="badge badge-worsened" style="font-size: 1.1rem; padding: 0.4rem 0.9rem;">Worsened ⚠️</span>
+                    {% elif trend_status == "Stable" %}
+                        <span class="badge badge-stable" style="font-size: 1.1rem; padding: 0.4rem 0.9rem;">Stable ⚖️</span>
+                    {% else %}
+                        <span class="badge badge-stable" style="font-size: 0.95rem;">{{ trend_status }}</span>
+                    {% endif %}
+                </div>
+                <p style="margin-top: 0.35rem;">Health Trend Direction</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart.js Graph Card -->
+    <div class="card card-purple">
+        <div class="card-title">
+            <span>📉 Progress Curve: {{ selected_test }}</span>
+            <span style="font-size: 0.85rem; color: var(--text-muted);">Normal Reference: {{ ref_min }} - {{ ref_max }} {{ unit }}</span>
+        </div>
+        <div style="position: relative; height: 350px; width: 100%;">
+            <canvas id="historyChart"></canvas>
+        </div>
+        <div style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-muted); display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;">
+            <span>🔵 <strong>Solid Line:</strong> Measured Patient Value</span>
+            <span>🟢 <strong>Green Dashed:</strong> Min Normal ({{ ref_min }})</span>
+            <span>🔴 <strong>Red Dashed:</strong> Max Normal ({{ ref_max }})</span>
+        </div>
+    </div>
+
+    <!-- Records History Table -->
+    <div class="card">
+        <div class="card-title">All Historical Readings for {{ selected_test }}</div>
+        <div class="table-responsive">
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Measured Value</th>
+                        <th>Normal Range</th>
+                        <th>Range Evaluation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in test_records %}
+                        <tr>
+                            <td><strong>📅 {{ r.test_date }}</strong></td>
+                            <td><strong>{{ r.value }}</strong> {{ r.unit }}</td>
+                            <td>{{ r.ref_min }} - {{ r.ref_max }} {{ r.unit }}</td>
+                            <td>
+                                {% if r.value < r.ref_min %}
+                                    <span class="badge badge-low">Low ⚠️</span>
+                                {% elif r.value > r.ref_max %}
+                                    <span class="badge badge-high">High ⚠️</span>
+                                {% else %}
+                                    <span class="badge badge-normal">Normal ✅</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+{% else %}
+    <div class="card" style="text-align: center; padding: 3rem;">
+        <p style="font-size: 1.1rem; color: var(--text-muted); margin-bottom: 1rem;">
+            No records found for test comparison.
+        </p>
+        <a href="{{ url_for('add_test') }}" class="btn btn-primary">➕ Add Test Results Now</a>
+    </div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+{% if chart_dates and chart_values %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const dates = {{ chart_dates|tojson }};
+        const values = {{ chart_values|tojson }};
+        const refMin = {{ ref_min|tojson }};
+        const refMax = {{ ref_max|tojson }};
+        const unit = {{ unit|tojson }};
+        const testName = {{ selected_test|tojson }};
+
+        renderHistoryChart("historyChart", dates, values, refMin, refMax, unit, testName);
+    });
+</script>
+{% endif %}
+{% endblock %}

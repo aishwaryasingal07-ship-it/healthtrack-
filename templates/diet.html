@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}AI Diet Suggestions - HealthTrack AI{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1><span>🥗</span> AI Personalized Diet Suggestions</h1>
+    <p>Wholesome, home-style Indian meal suggestions aligned with your personal health markers.</p>
+</div>
+
+<div class="content-grid-2">
+    <!-- Dietary Preferences Form -->
+    <div class="card card-teal">
+        <h2 class="card-title">Choose Your Food Preferences</h2>
+        <form action="{{ url_for('diet') }}" method="POST" id="diet-form" onsubmit="showAiLoading('diet-btn', 'Preparing Indian Meal Plan with Groq...')">
+            <!-- CSRF Protection Token -->
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+            <div class="form-group">
+                <label class="form-label">Dietary Preference</label>
+                <div style="display: flex; gap: 1rem; margin-top: 0.4rem; flex-wrap: wrap;">
+                    <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer;">
+                        <input type="radio" name="preference" value="vegetarian" {% if preference == 'vegetarian' %}checked{% endif %}>
+                        <span>🌱 Vegetarian</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer;">
+                        <input type="radio" name="preference" value="non-vegetarian" {% if preference == 'non-vegetarian' %}checked{% endif %}>
+                        <span>🍗 Non-Vegetarian</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer;">
+                        <input type="radio" name="preference" value="vegan" {% if preference == 'vegan' %}checked{% endif %}>
+                        <span>🌿 100% Vegan</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="notes" class="form-label">Optional Health & Taste Notes</label>
+                <textarea id="notes" name="notes" rows="3" class="form-control" placeholder="e.g. Mild spices, low sugar, prefer South Indian breakfasts, dairy intolerant...">{{ notes }}</textarea>
+                <small style="color: var(--text-muted); display: block; margin-top: 0.35rem;">Mention any allergies, food dislikes, or specific regional preferences.</small>
+            </div>
+
+            <button type="submit" id="diet-btn" class="btn btn-teal" style="width: 100%;">
+                ✨ Generate Indian Meal Plan
+            </button>
+        </form>
+    </div>
+
+    <!-- How Diet AI Works -->
+    <div class="card card-orange" style="background: #ffffff;">
+        <h2 class="card-title">🍛 Wholesome Indian Nutrition</h2>
+        <p style="font-size: 0.92rem; color: var(--text-muted); margin-bottom: 0.8rem;">
+            HealthTrack AI reviews your latest lab tests (e.g. blood sugar, cholesterol, hemoglobin) and recommends everyday Indian ingredients:
+        </p>
+        <ul style="padding-left: 1.2rem; color: var(--text-muted); font-size: 0.9rem; line-height: 1.8;">
+            <li><strong>Breakfast</strong>: High-fiber options like poha, oats upma, idli with sambar, or moong dal cheela.</li>
+            <li><strong>Lunch</strong>: Balanced thali with rotis, whole lentils (dal/rajma), seasonal sabzis, and fresh curd/salad.</li>
+            <li><strong>Snack</strong>: Nutrient-dense bites like roasted makhana, sprouted chaat, or buttermilk.</li>
+            <li><strong>Dinner</strong>: Light, easy-to-digest preparations like vegetable dalia or palak soup.</li>
+        </ul>
+    </div>
+</div>
+
+<!-- Loading Box -->
+<div id="ai-loading-box" class="loading-indicator">
+    <div style="font-size: 1.1rem; margin-bottom: 0.35rem;">
+        <span class="spinner"></span> Consulting Groq AI for customized Indian meal ideas...
+    </div>
+    <div style="font-size: 0.85rem; color: #15803d;">Crafting wholesome breakfast, lunch, snack, and dinner suggestions.</div>
+</div>
+
+<!-- Generated Meal Plan Card -->
+{% if diet_plan %}
+<div class="card" style="border: 1px solid var(--teal); box-shadow: var(--shadow-lg);">
+    <div class="card-title" style="color: var(--teal); border-bottom: 1px solid #ccfbf1; padding-bottom: 0.75rem;">
+        <span>🍽️ Your Recommended Daily Indian Meal Plan</span>
+        <span class="badge badge-normal" style="text-transform: capitalize;">{{ preference }}</span>
+    </div>
+
+    <!-- Pre-wrapped AI Output -->
+    <div class="ai-output-box">
+{{ diet_plan }}
+    </div>
+
+    <div class="disclaimer-banner">
+        <span>⚠️</span>
+        <div>
+            <strong>Disclaimer:</strong> AI-generated information, not medical advice. Please consult your doctor or registered dietitian for specialized therapeutic diets.
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block title %}Manual Test Entry - HealthTrack AI{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1><span>🧪</span> Manual Lab Test Entry</h1>
+    <p>Record individual lab test measurements directly from your printed or digital test reports.</p>
+</div>
+
+<div class="content-grid-2">
+    <!-- Test Entry Form -->
+    <div class="card card-blue">
+        <h2 class="card-title">Add New Test Value</h2>
+
+        <!-- Quick Presets for Common Indian Lab Tests -->
+        <div style="margin-bottom: 1.2rem;">
+            <label class="form-label" style="font-size: 0.8rem; color: var(--text-muted);">Quick Presets (Click to autofill):</label>
+            <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+                <button type="button" class="btn btn-outline btn-sm" onclick="fillTestPreset('Fasting Blood Sugar', 'mg/dL', 70, 99)">Blood Sugar</button>
+                <button type="button" class="btn btn-outline btn-sm" onclick="fillTestPreset('Hemoglobin', 'g/dL', 12, 16)">Hemoglobin</button>
+                <button type="button" class="btn btn-outline btn-sm" onclick="fillTestPreset('Total Cholesterol', 'mg/dL', 125, 200)">Cholesterol</button>
+                <button type="button" class="btn btn-outline btn-sm" onclick="fillTestPreset('Vitamin D', 'ng/mL', 30, 100)">Vitamin D</button>
+                <button type="button" class="btn btn-outline btn-sm" onclick="fillTestPreset('TSH (Thyroid)', 'uIU/mL', 0.4, 4.0)">TSH</button>
+            </div>
+        </div>
+
+        <form action="{{ url_for('add_test') }}" method="POST">
+            <!-- CSRF Protection Token -->
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+            <div class="form-group">
+                <label for="test_name" class="form-label">Test Name</label>
+                <input type="text" id="test_name" name="test_name" class="form-control" placeholder="e.g. Fasting Blood Sugar" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="value" class="form-label">Result Value</label>
+                    <input type="number" step="0.01" id="value" name="value" class="form-control" placeholder="e.g. 104.5" required>
+                </div>
+                <div class="form-group">
+                    <label for="unit" class="form-label">Unit of Measurement</label>
+                    <input type="text" id="unit" name="unit" class="form-control" placeholder="e.g. mg/dL, g/dL, %" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="test_date" class="form-label">Test Date</label>
+                <input type="date" id="test_date" name="test_date" class="form-control" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="ref_min" class="form-label">Reference Min Value</label>
+                    <input type="number" step="0.01" id="ref_min" name="ref_min" class="form-control" placeholder="e.g. 70" required>
+                </div>
+                <div class="form-group">
+                    <label for="ref_max" class="form-label">Reference Max Value</label>
+                    <input type="number" step="0.01" id="ref_max" name="ref_max" class="form-control" placeholder="e.g. 99" required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">
+                💾 Save Test to My Account
+            </button>
+        </form>
+    </div>
+
+    <!-- Instructions Card -->
+    <div class="card card-teal" style="background: #ffffff;">
+        <h2 class="card-title">💡 Why Reference Ranges Matter</h2>
+        <p style="font-size: 0.92rem; color: var(--text-muted); margin-bottom: 0.8rem;">
+            Every pathology report prints a reference interval (minimum and maximum).
+        </p>
+        <ul style="padding-left: 1.2rem; color: var(--text-muted); font-size: 0.9rem; line-height: 1.8;">
+            <li><strong>Min & Max</strong>: Tell the system whether your blood reading is safely within standard parameters.</li>
+            <li><strong>Groq AI Engine</strong>: Uses these exact ranges to evaluate trends without guessing arbitrary laboratory standards.</li>
+            <li><strong>History Graph</strong>: Renders healthy reference bounds so you can track your progress over time visually.</li>
+        </ul>
+    </div>
+</div>
+
+<!-- Existing Records Table -->
+<div class="card card-purple">
+    <div class="card-title">
+        <span>📋 Recorded Lab Test Entries ({{ tests|length }})</span>
+    </div>
+
+    {% if tests %}
+        <div class="table-responsive">
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>Test Name</th>
+                        <th>Test Date</th>
+                        <th>Result Value</th>
+                        <th>Reference Range</th>
+                        <th>Status</th>
+                        <th style="text-align: right;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for t in tests %}
+                        <tr>
+                            <td><strong>{{ t.test_name }}</strong></td>
+                            <td>{{ t.test_date }}</td>
+                            <td><strong>{{ t.value }}</strong> {{ t.unit }}</td>
+                            <td style="color: var(--text-muted);">{{ t.ref_min }} - {{ t.ref_max }} {{ t.unit }}</td>
+                            <td>
+                                {% if t.value < t.ref_min %}
+                                    <span class="badge badge-low">Below Min ⚠️</span>
+                                {% elif t.value > t.ref_max %}
+                                    <span class="badge badge-high">Above Max ⚠️</span>
+                                {% else %}
+                                    <span class="badge badge-normal">Normal Range ✅</span>
+                                {% endif %}
+                            </td>
+                            <td style="text-align: right;">
+                                <form action="{{ url_for('delete_test', test_id=t.id) }}" method="POST" onsubmit="return confirm('Delete this test entry?');" style="display: inline;">
+                                    <!-- CSRF Token -->
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p style="color: var(--text-muted); text-align: center; padding: 2rem;">No test records found. Add your first record above.</p>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Set default date to today
+    document.addEventListener("DOMContentLoaded", function() {
+        const dateInput = document.getElementById("test_date");
+        if (dateInput && !dateInput.value) {
+            dateInput.value = new Date().toISOString().split("T")[0];
+        }
+    });
+</script>
+{% endblock %}
